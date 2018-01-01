@@ -1,9 +1,12 @@
 const canvas = document.getElementById('regl-canvas')
 const regl = require('regl')(canvas)
 const mouse = require('mouse-change')()
+const CCapture = require('ccapture.js')
 
 const fragmentShader = require('./shader.frag')
 const vertexShader = require('./shader.vert')
+
+const capturer = new CCapture( { format: 'webm', timeLimit: 30 } )
 
 const draw = regl({
   frag: fragmentShader,
@@ -53,4 +56,10 @@ regl.frame(context => {
 
   // draw the shaders
   draw()
+
+  // record frame for video
+  capturer.capture(canvas)
 })
+
+capturer.start()
+
