@@ -13,3 +13,4 @@ I'll try to spend no more than 30 minutes to an hour on each shader, and I'll do
 - [glslCanvas documentation](https://github.com/patriciogonzalezvivo/glslCanvas)
 - [Encoding video for the web](https://gist.github.com/Vestride/278e13915894821e1d6f)
 - [ofBook chapter on shaders](http://openframeworks.cc/ofBook/chapters/shaders.html)
+- [CCapture.js, a library for recording videos of canvas animations at smooth framerates](https://github.com/spite/ccapture.js/)
