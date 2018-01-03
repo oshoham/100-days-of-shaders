@@ -58,8 +58,8 @@ regl.frame(context => {
   draw()
 
   // record frame for video
-  capturer.capture(canvas)
+  // capturer.capture(canvas)
 })
 
-capturer.start()
+// capturer.start()
 
