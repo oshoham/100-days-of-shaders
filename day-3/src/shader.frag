@@ -35,7 +35,7 @@ void main() {
     vec3 pct = vec3(impulse(impulseEasing, st.y));
 
     float stepEasing = 1.0 - smoothPulse(3.0, t + 1.6) * 0.7 + 0.5;
-    // stepEasing = 1.6;
+    // stepEasing = 1.3;
     pct.r = smoothstep(0.1, stepEasing, st.y);
 
     color = mix(orange, darkPurple, pct);
