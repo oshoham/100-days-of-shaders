@@ -6,6 +6,13 @@ For the first week or two, I'll be working through [The Book of Shaders](https:/
 
 I'll try to spend no more than 30 minutes to an hour on each shader, and I'll document every day by posting on [Instagram](https://www.instagram.com/orenorenorenoren/) with the hashtag [#100days_ITP](https://www.instagram.com/explore/tags/100days_ITP/).
 
+## Videos
+
+- [Day 1](https://www.instagram.com/p/BdbAsUiHM1X)
+- [Day 2](https://www.instagram.com/p/BdeNrg6nauo)
+- [Day 3](https://www.instagram.com/p/BdgIr8eHERt)
+- [Day 4](https://www.instagram.com/p/Bdi2VgpHx88/)
+
 ## Useful Resources I Found Along the Way
 
 - [The Book of Shaders](https://thebookofshaders.com)
