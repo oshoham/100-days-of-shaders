@@ -1,5 +1,5 @@
 {
-  "name": "100-days-of-shaders-day-x",
+  "name": "100-days-of-shaders-day-10",
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
@@ -27,6 +27,8 @@
     "resl": "^1.0.3"
   },
   "glslify": {
-    "transform": ["glslify-hex"]
+    "transform": [
+      "glslify-hex"
+    ]
   }
 }

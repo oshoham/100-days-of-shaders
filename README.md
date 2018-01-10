@@ -16,6 +16,8 @@ I'll try to spend no more than 30 minutes to an hour on each shader, and I'll do
 - [Day 6](https://www.instagram.com/p/BdoACFvH9yu)
 - [Day 7](https://www.instagram.com/p/BdrHZS_nMWE)
 - [Day 8](https://www.instagram.com/p/Bds59dqnHBr)
+- [Day 9](https://www.instagram.com/p/BdvYYPpHL94)
+- [Day 10](https://www.instagram.com/p/BdxwpNvnmlT)
 
 ## Useful Resources I Found Along the Way
 
@@ -25,3 +27,6 @@ I'll try to spend no more than 30 minutes to an hour on each shader, and I'll do
 - [Encoding video for the web](https://gist.github.com/Vestride/278e13915894821e1d6f)
 - [ofBook chapter on shaders](http://openframeworks.cc/ofBook/chapters/shaders.html)
 - [CCapture.js, a library for recording videos of canvas animations at smooth framerates](https://github.com/spite/ccapture.js/)
+- [glsl-map](https://github.com/msfeldstein/glsl-map)
+- [glsl-easings](https://github.com/glslify/glsl-easings)
+- [glslify-hex](https://github.com/glslify/glslify-hex)
