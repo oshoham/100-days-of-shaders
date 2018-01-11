@@ -18,6 +18,7 @@ I'll try to spend no more than 30 minutes to an hour on each shader, and I'll do
 - [Day 8](https://www.instagram.com/p/Bds59dqnHBr)
 - [Day 9](https://www.instagram.com/p/BdvYYPpHL94)
 - [Day 10](https://www.instagram.com/p/BdxwpNvnmlT)
+- [Day 11](https://www.instagram.com/p/Bd0RlS5HTid)
 
 ## Useful Resources I Found Along the Way
 
@@ -30,3 +31,4 @@ I'll try to spend no more than 30 minutes to an hour on each shader, and I'll do
 - [glsl-map](https://github.com/msfeldstein/glsl-map)
 - [glsl-easings](https://github.com/glslify/glsl-easings)
 - [glslify-hex](https://github.com/glslify/glslify-hex)
+- [glsl-random](https://github.com/mattdesl/glsl-random)
