@@ -32,3 +32,4 @@ I'll try to spend no more than 30 minutes to an hour on each shader, and I'll do
 - [glsl-easings](https://github.com/glslify/glsl-easings)
 - [glslify-hex](https://github.com/glslify/glslify-hex)
 - [glsl-random](https://github.com/mattdesl/glsl-random)
+- [glsl-noise](https://github.com/hughsk/glsl-noise)
