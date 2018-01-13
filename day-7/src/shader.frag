@@ -58,14 +58,14 @@ void main(){
 
   // pct = min(distance(st,vec2(c, a)), distance(st,vec2(d, b)));;
 
-  float exponent = 0.2;
+  float exponent = 0.1;
 
   pct = min(distance(st,vec2(c, a)),distance(st,vec2(d, b))) * distance(st, vec2(a, c)) * distance(st, vec2(b, d));
   pct = min(pct, min(distance(st,vec2(g, e)),distance(st,vec2(h, f))) * distance(st, vec2(e, g)) * distance(st, vec2(f, h)));
   pct = min(pct, min(distance(st,vec2(k, i)),distance(st,vec2(l, j))) * distance(st, vec2(i, k)) * distance(st, vec2(j, l)));
   pct = pow(pct, exponent);
 
-  vec3 color = vec3(pct);
+  vec3 color = vec3(1.0 - pct);
 
   gl_FragColor = vec4( color, 1.0 );
 }
