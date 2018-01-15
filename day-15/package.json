@@ -1,5 +1,5 @@
 {
-  "name": "100-days-of-shaders-day-13",
+  "name": "100-days-of-shaders-day-x",
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
@@ -20,8 +20,8 @@
   },
   "dependencies": {
     "ccapture.js": "^1.0.7",
-    "glsl-easings": "^1.0.0",
     "glsl-map": "^1.0.1",
+    "glsl-noise": "^0.0.0",
     "glslify-hex": "^2.1.1",
     "mouse-change": "^1.4.0",
     "regl": "^1.3.0",
