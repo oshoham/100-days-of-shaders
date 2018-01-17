@@ -24,6 +24,7 @@ I'll try to spend no more than 30 minutes to an hour on each shader, and I'll do
 - [Day 14](https://www.instagram.com/p/Bd8TKh2HIyP)
 - [Day 15](https://www.instagram.com/p/Bd-WyeKnCaK)
 - [Day 16](https://www.instagram.com/p/BeBPyHtH7zt)
+- [Day 17](https://www.instagram.com/p/BeEV478H2AW)
 
 ## Useful Resources I Found Along the Way
 

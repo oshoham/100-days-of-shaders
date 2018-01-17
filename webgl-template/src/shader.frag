@@ -2,6 +2,11 @@
 precision mediump float;
 #endif
 
+#pragma glslify: map = require('glsl-map')
+
+#define PI 3.14159265359
+#define TWO_PI 6.28318530718
+
 varying vec2 v_texcoord;
 
 uniform vec2 u_resolution;
