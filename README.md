@@ -29,6 +29,7 @@ I'll try to spend no more than 30 minutes to an hour on each shader, and I'll do
 - [Day 19](https://www.instagram.com/p/BeJpj3fH8KJ)
 - [Day 20](https://www.instagram.com/p/BeLwA6Tn47s)
 - [Day 21](https://www.instagram.com/p/BeO8kNEHn3d)
+- [Day 22](https://www.instagram.com/p/BeQ5OrOndEA)
 
 ## Useful Resources I Found Along the Way
 
@@ -43,3 +44,5 @@ I'll try to spend no more than 30 minutes to an hour on each shader, and I'll do
 - [glslify-hex](https://github.com/glslify/glslify-hex)
 - [glsl-random](https://github.com/mattdesl/glsl-random)
 - [glsl-noise](https://github.com/hughsk/glsl-noise)
+- [glsl-fast-gaussian-blur](https://github.com/Jam3/glsl-fast-gaussian-blur)
+- [GLSL Linter for SublimeText](https://github.com/numb3r23/SublimeLinter-contrib-glsl)
