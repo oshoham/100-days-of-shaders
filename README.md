@@ -30,6 +30,7 @@ I'll try to spend no more than 30 minutes to an hour on each shader, and I'll do
 - [Day 20](https://www.instagram.com/p/BeLwA6Tn47s)
 - [Day 21](https://www.instagram.com/p/BeO8kNEHn3d)
 - [Day 22](https://www.instagram.com/p/BeQ5OrOndEA)
+- [Day 23](https://www.instagram.com/p/BeUkF1yny4T)
 
 ## Useful Resources I Found Along the Way
 
@@ -38,6 +39,8 @@ I'll try to spend no more than 30 minutes to an hour on each shader, and I'll do
 - [glslCanvas documentation](https://github.com/patriciogonzalezvivo/glslCanvas)
 - [Encoding video for the web](https://gist.github.com/Vestride/278e13915894821e1d6f)
 - [ofBook chapter on shaders](http://openframeworks.cc/ofBook/chapters/shaders.html)
+- [GPU Gems](https://developer.nvidia.com/gpugems/GPUGems/gpugems_pref01.html)
+- [WebGL fluid simulations](http://jamie-wong.com/2016/08/05/webgl-fluid-simulation/)
 - [CCapture.js, a library for recording videos of canvas animations at smooth framerates](https://github.com/spite/ccapture.js/)
 - [glsl-map](https://github.com/msfeldstein/glsl-map)
 - [glsl-easings](https://github.com/glslify/glsl-easings)

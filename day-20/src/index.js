@@ -27,7 +27,7 @@ const renderNoiseToBuffer = regl({
     a_texcoord: [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0],
     a_position: [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0]
   },
- context: {
+  context: {
     boundingRect: () => canvas ? canvas.getBoundingClientRect() : document.body.getBoundingClientRect()
   },
   uniforms: {
