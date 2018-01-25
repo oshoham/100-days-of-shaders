@@ -5,7 +5,7 @@ precision mediump float;
 varying vec2 v_texcoord;
 
 uniform vec2 u_resolution;
-uniform float u_half_rdx;
+uniform float u_half_reciprocal_grid_scale;
 
 uniform sampler2D u_velocity;
 uniform sampler2D u_pressure;
@@ -19,7 +19,7 @@ void main() {
   float pressure_right = texture2D(u_pressure, st + texel * vec2(1.0, 0.0)).x;
   float pressure_left = texture2D(u_pressure, st - texel * vec2(1.0, 0.0)).x;
 
-  vec2 gradient = u_half_rdx * vec2(pressure_right - pressure_left, pressure_top - pressure_bottom);
+  vec2 gradient = u_half_reciprocal_grid_scale * vec2(pressure_right - pressure_left, pressure_top - pressure_bottom);
   vec2 old_velocity = texture2D(u_velocity, st).xy;
 
   gl_FragColor = vec4(old_velocity - gradient, 0.0, 1.0);

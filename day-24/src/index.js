@@ -15,13 +15,13 @@ const opticalFlowShader = require('./optical-flow.frag')
 const copyShader = require('./copy.frag')
 const vertexShader = require('./shader.vert')
 
-const capturer = new CCapture( { format: 'webm', timeLimit: 60 } )
+const capturer = new CCapture( { format: 'webm', timeLimit: 10, framerate: 30 } )
 
 const RADIUS = 640
-const DELTA_T = 1 / 60
+const TIMESTEP = 1 / 60
 const VELOCITY_DISSIPATION = 1.0
 const GRID_SCALE = 1.0
-const NUM_JACBOBI_ITERATIONS = 10
+const NUM_JACBOBI_ITERATIONS = 20
 
 const previousFrame = regl.framebuffer({
   color: regl.texture({
@@ -44,7 +44,8 @@ const velocityState = Array(2).fill().map(() => regl.framebuffer({
   color: regl.texture({
     radius: RADIUS,
     data: (Array(RADIUS * RADIUS * 4)).fill(0.0),
-    type: 'float'
+    type: 'float',
+    wrap: 'clamp'
   }),
   depthStencil: false
 }))
@@ -53,7 +54,8 @@ const colorState = Array(2).fill().map(() => regl.framebuffer({
   color: regl.texture({
     radius: RADIUS,
     data: (Array(RADIUS * RADIUS * 4)).fill(0.0),
-    type: 'float'
+    type: 'float',
+    wrap: 'clamp'
   }),
   depthStencil: false
 }))
@@ -62,7 +64,8 @@ const pressureState = Array(2).fill().map(() => regl.framebuffer({
   color: regl.texture({
     radius: RADIUS,
     data: (Array(RADIUS * RADIUS * 4)).fill(0.0),
-    type: 'float'
+    type: 'float',
+    wrap: 'clamp'
   }),
   depthStencil: false
 }))
@@ -102,9 +105,9 @@ const advect = regl({
   frag: advectShader,
   uniforms: {
     u_resolution: ({ drawingBufferWidth, drawingBufferHeight }) => [drawingBufferWidth, drawingBufferHeight],
-    u_delta_t: () => DELTA_T,
+    u_timestep: () => TIMESTEP,
     u_dissipation: () => Math.pow(VELOCITY_DISSIPATION, 0.05),
-    u_rdx: () => 1.0 / GRID_SCALE,
+    u_reciprocal_grid_scale: () => 1.0 / GRID_SCALE,
     u_velocity: regl.prop('velocity'),// ,
     u_source: regl.prop('source') //({ tick }) => velocityState[tick % 2]
   },
@@ -115,7 +118,7 @@ const divergence = regl({
   frag: divergenceShader,
   uniforms: {
     u_resolution: ({ drawingBufferWidth, drawingBufferHeight }) => [drawingBufferWidth, drawingBufferHeight],
-    u_half_rdx: 0.5 / GRID_SCALE,
+    u_half_reciprocal_grid_scale: 0.5 / GRID_SCALE,
     u_velocity: ({ tick }) => velocityState[(tick + 1) % 2],
   },
   framebuffer: divergenceBuffer
@@ -130,7 +133,7 @@ const jacobiPressure = regl({
     u_divergence: divergenceBuffer,
     u_pressure: regl.prop('pressure')
   },
-  framebuffer: regl.prop('framebuffer')
+  framebuffer: regl.prop('buffer')
 })
 
 const gradient = regl({
@@ -142,7 +145,7 @@ const gradient = regl({
   },
   uniforms: {
     u_resolution: ({ drawingBufferWidth, drawingBufferHeight }) => [drawingBufferWidth, drawingBufferHeight],
-    u_half_rdx: 0.5 / GRID_SCALE,
+    u_half_reciprocal_grid_scale: 0.5 / GRID_SCALE,
     u_velocity: ({ tick }) => velocityState[(tick + 1) % 2],
     u_pressure: regl.prop('pressure')
   },
@@ -226,14 +229,15 @@ window.navigator.mediaDevices.getUserMedia({
         regl.clear({ color: [0, 0, 0, 1], framebuffer: pressureState[0] })
         regl.clear({ color: [0, 0, 0, 1], framebuffer: pressureState[1] })
 
-        // regl.clear({ color: [0, 0, 0, 1], framebuffer: velocityState[1] })
-        // regl.clear({ color: [0, 0, 0, 1], framebuffer: colorState[1] })
-
-        velocityState.forEach(velocityBuffer => initBuffer({ shader: initVelocityShader, buffer: velocityBuffer }))
-        colorState.forEach(colorBuffer => initBuffer({ shader: initColorShader, buffer: colorBuffer }))
+        for (let velocityBuffer of velocityState) {
+          initBuffer({ shader: initVelocityShader, buffer: velocityBuffer })
+        }
+        for (let colorBuffer of colorState) {
+          initBuffer({ shader: initColorShader, buffer: colorBuffer })
+        }
       })
 
-      const texture = regl.texture(video)
+      // const texture = regl.texture(video)
       regl.frame(({ tick }) => {
         setupQuad(() => {
           // do other stuff every frame
@@ -251,25 +255,25 @@ window.navigator.mediaDevices.getUserMedia({
             buffer: velocityState[nextTick]
           })
 
-          // divergence()
+          divergence()
 
-          // let pressureIndex = 0
-          // regl.clear({ color: [0, 0, 0, 1], framebuffer: pressureState[pressureIndex] })
-          // for (let i = 0; i < NUM_JACBOBI_ITERATIONS; i++) {
-          //   jacobiPressure({
-          //     framebuffer: pressureState[(pressureIndex + 1) % 2],
-          //     pressure: pressureState[pressureIndex % 2]
-          //   })
-          //   pressureIndex++
-          // }
+          let pressureIndex = 0
+          regl.clear({ color: [0, 0, 0, 1], framebuffer: pressureState[pressureIndex] })
+          for (let i = 0; i < NUM_JACBOBI_ITERATIONS; i++) {
+            jacobiPressure({
+              buffer: pressureState[(pressureIndex + 1) % 2],
+              pressure: pressureState[pressureIndex % 2]
+            })
+            pressureIndex++
+          }
 
-          // gradient({ pressure: pressureState[pressureIndex % 2] })
+          gradient({ pressure: pressureState[pressureIndex % 2] })
 
-          // advect({
-          //   velocity: velocityState[currentTick],
-          //   source: colorState[currentTick],
-          //   buffer: colorState[nextTick]
-          // })
+          advect({
+            velocity: velocityState[currentTick],
+            source: colorState[currentTick],
+            buffer: colorState[nextTick]
+          })
 
           draw({ currentFrame: velocityState[currentTick] })
 
