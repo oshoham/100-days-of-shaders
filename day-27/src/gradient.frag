@@ -11,7 +11,7 @@ uniform sampler2D u_velocity;
 uniform sampler2D u_pressure;
 
 void main() {
-  vec2 st = gl_FragCoord.xy / u_resolution.xy;
+  vec2 st = v_texcoord;
   vec2 texel = 1.0 / u_resolution;
 
   float pressure_top = texture2D(u_pressure, st + texel * vec2(0.0, 1.0)).x;

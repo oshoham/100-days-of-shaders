@@ -1,6 +1,7 @@
-float line(in vec2 p1, in vec2 p2, in float thickness) {
-  vec2 st = gl_FragCoord.xy / u_resolution.xy;
+#define PI 3.14159265359
+#define TWO_PI 6.28318530718
 
+float line(in vec2 st, in vec2 p1, in vec2 p2, in float thickness) {
   float a = abs(distance(p1, st));
   float b = abs(distance(p2, st));
   float c = abs(distance(p1, p2));

@@ -10,7 +10,7 @@ uniform float u_half_reciprocal_grid_scale;
 uniform sampler2D u_velocity;
 
 void main() {
-  vec2 st = gl_FragCoord.xy / u_resolution;
+  vec2 st = v_texcoord;
   vec2 texel = 1.0 / u_resolution;
 
   vec2 velocity_top = texture2D(u_velocity, st + texel * vec2(0.0, 1.0)).xy;
