@@ -3,6 +3,7 @@ const regl = require('regl')({ canvas: canvas, extensions: ['OES_texture_float']
 const resl = require('resl')
 const reglMicrophone = require('regl-audio/microphone')
 const mouse = require('mouse-change')()
+const WebMidi = require('webmidi')
 
 const fragmentShader = require('./shader.frag')
 const initVelocityShader = require('./init-velocity.frag')
@@ -13,7 +14,7 @@ const divergenceShader = require('./divergence.frag')
 const jacobiPressureShader = require('./jacobi.frag')
 const gradientShader = require('./gradient.frag')
 const opticalFlowShader = require('./optical-flow.frag')
-const edgeDetectionShader = require('./edge-detection.frag')
+// const edgeDetectionShader = require('./edge-detection.frag')
 const copyShader = require('./copy.frag')
 const vertexShader = require('./shader.vert')
 
@@ -26,8 +27,8 @@ const APPLY_FLOW = true
 const ADVECT_VELOCITY = true
 const APPLY_PRESSURE = true
 
-let width = Math.round(512 * (regl._gl.canvas.width / regl._gl.canvas.height))
-let height = 512
+let width = Math.round(400 * (regl._gl.canvas.width / regl._gl.canvas.height))
+let height = 400
 
 const initialConditions = (Array(width * height * 4)).fill(0).map((v, i) => (i + 1) % 4 === 0 ? 1 : 0)
 
@@ -94,14 +95,14 @@ const divergenceBuffer = regl.framebuffer({
   depthStencil: false
 })
 
-const edgeBuffer = regl.framebuffer({
-  color: regl.texture({
-    width: width,
-    height: height,
-    data: initialConditions
-  }),
-  depthStencil: false
-})
+// const edgeBuffer = regl.framebuffer({
+//   color: regl.texture({
+//     width: width,
+//     height: height,
+//     data: initialConditions
+//   }),
+//   depthStencil: false
+// })
 
 const setupQuad = regl({
   vert: vertexShader,
@@ -140,14 +141,14 @@ const advect = regl({
   framebuffer: regl.prop('buffer') //({ tick }) => velocityState[(tick + 1) % 2]
 })
 
-const edgeDetection = regl({
-  frag: edgeDetectionShader,
-  uniforms: {
-    u_resolution: getResolution,
-    u_frame: regl.prop('frame')
-  },
-  framebuffer: regl.prop('buffer')
-})
+// const edgeDetection = regl({
+//   frag: edgeDetectionShader,
+//   uniforms: {
+//     u_resolution: getResolution,
+//     u_frame: regl.prop('frame')
+//   },
+//   framebuffer: regl.prop('buffer')
+// })
 
 const applyFlow = regl({
   frag: applyFlowShader,
@@ -158,7 +159,6 @@ const applyFlow = regl({
     u_audio_scale: regl.prop('audioScale'),
     u_velocity: regl.prop('velocity'),
     u_flow: regl.prop('flow'),
-    u_edges: regl.prop('edges'),
     u_apply_flow: regl.prop('applyFlow'),
     u_apply_friction: regl.prop('applyFriction'),
     u_apply_audio: regl.prop('applyAudio')
@@ -268,6 +268,10 @@ const init = () => {
   }
 }
 
+let flowScale = 0.25
+let audioScale = 0.25
+let reset = false
+
 const onVideoLoad = video => {
   video.autoplay = true
   video.loop = true
@@ -301,7 +305,7 @@ const onVideoLoad = video => {
               width = 400 * (regl._gl.canvas.width / regl._gl.canvas.height)
               height = 400
 
-              for (let fbo of [previousFrame, opticalFlow, divergenceBuffer, edgeBuffer, ...velocityState, ...colorState, ...pressureState]) {
+              for (let fbo of [previousFrame, opticalFlow, divergenceBuffer, ...velocityState, ...colorState, ...pressureState]) {
                 fbo.resize(width, height)
               }
               init()
@@ -309,14 +313,14 @@ const onVideoLoad = video => {
 
             const currentFrame = texture.subimage(video)
 
-            if (mouse.buttons === 1) {
+            if (mouse.buttons === 1 || reset) {
               init()
             }
 
-            edgeDetection({
-              frame: currentFrame,
-              buffer: edgeBuffer
-            })
+            // edgeDetection({
+            //   frame: currentFrame,
+            //   buffer: edgeBuffer
+            // })
             computeOpticalFlow({ currentFrame: currentFrame })
 
             if (ADVECT_VELOCITY) {
@@ -333,11 +337,10 @@ const onVideoLoad = video => {
             if (APPLY_FLOW) {
               applyFlow({
                 time: time,
-                flowScale: 0.25,
-                audioScale: 0.25,
+                flowScale: flowScale,
+                audioScale: audioScale,
                 velocity: velocityState[velocitySourceIndex],
                 flow: opticalFlow,
-                edges: edgeBuffer,
                 buffer: velocityState[velocityDestinationIndex],
                 applyFlow: true,
                 applyAudio: true,
@@ -391,7 +394,7 @@ const onVideoLoad = video => {
 window.navigator.mediaDevices.getUserMedia({
   audio: false,
   video: {
-    aspectRatio: 1.0
+    aspectRatio: width / height
   }
 }).then(function(stream)  {
   try {
@@ -410,4 +413,67 @@ window.navigator.mediaDevices.getUserMedia({
       onDone: ({ video }) => onVideoLoad(video)
     })
   }
+})
+
+const map = (value, inMin, inMax, outMin, outMax) => {
+  return outMin + (outMax - outMin) * (value - inMin) / (inMax - inMin)
+}
+
+const setupMidiController = input => {
+  input.addListener('controlchange', 'all', e => {
+    const controller = e.controller.number
+    const value = e.value
+
+    switch (controller) {
+      case 1:
+        flowScale = map(value, 0, 127, 0, 1)
+        break
+      case 2:
+        audioScale = map(value, 0, 127, 0, 1)
+        break
+      default:
+        break
+    }
+  })
+
+  input.addListener('noteon', 'all', e => {
+    if (e.note.name === 'C' && e.note.octave === 2) {
+      reset = true
+    }
+  })
+
+  input.addListener('noteoff', 'all', e => {
+    if (e.note.name === 'C' && e.note.octave === 2) {
+      reset = false
+    }
+  })
+}
+
+const teardownMidiController = input => input.removeListener()
+
+WebMidi.enable(() => {
+  let connected = false
+  let input = WebMidi.getInputByName('MPKmini2')
+
+  if (input) {
+    setupMidiController(input)
+    connected = true
+  }
+
+  WebMidi.addListener('disconnected', () => {
+    if (connected) {
+      teardownMidiController(input)
+      connected = false
+    }
+  })
+
+  WebMidi.addListener('connected', () => {
+    if (!connected) {
+      input = WebMidi.getInputByName('MPKmini2')
+      if (input) {
+        setupMidiController(input)
+        connected = true
+      }
+    }
+  })
 })
