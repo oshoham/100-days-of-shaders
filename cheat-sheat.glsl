@@ -1,6 +1,8 @@
 #define PI 3.14159265359
 #define TWO_PI 6.28318530718
 
+// 2D Drawing Functions
+
 float line(in vec2 st, in vec2 p1, in vec2 p2, in float thickness) {
   float a = abs(distance(p1, st));
   float b = abs(distance(p2, st));
@@ -82,6 +84,8 @@ float lightness(in vec3 c) {
   return (c.r + c.g + c.b) / 3.0;
 }
 
+// Image Processing
+
 const mat3 Gx = mat3(
   -1.0, -2.0, -1.0,
   0.0, 0.0, 0.0,
@@ -111,4 +115,74 @@ float sobel_edge_detection(in vec2 st, in sampler2D tex) {
   }
 
   return length(vec2(value_gx, value_gy));
+}
+
+// Signed Distance Functions
+
+float vmax(vec3 v) {
+  return max(max(v.x, v.y), v.z);
+}
+
+float sphere_sdf(vec3 point, vec3 center, float radius) {
+  return distance(point, center) - radius;
+}
+
+float box_sdf(vec3 point, vec3 center, vec3 size) {
+  float x = max(
+    point.x - center.x - size.x / 2.0,
+    center.x - point.x - size.x / 2.0
+  );
+
+  float y = max(
+    point.y - center.y - size.y / 2.0,
+    center.y - point.y - size.y / 2.0
+  );
+
+  float z = max(
+    point.z - center.z - size.z / 2.0,
+    center.z - point.z - size.z / 2.0
+  );
+
+  return vmax(vec3(x, y, z));
+}
+
+float box_sdf_fast(vec3 point, vec3 center, vec3 size) {
+  return vmax(abs(point - center) - size * 0.5);
+}
+
+float sdf_union(float d1, float d2) {
+  return min(d1, d2);
+}
+
+float sdf_subtraction(float d1, float d2) {
+  return max(-d1, d2);
+}
+
+float sdf_intersection(float d1, float d2) {
+  return max(d1, d2);
+}
+
+// Shaping Functions
+
+float interpolate(float v1, float v2, float a) {
+  return a * v1 + (1.0 - a) * v2;
+}
+
+// exponential smooth min (k = 32);
+float smin(in float a, in float b, in float k) {
+  float res = exp(-k * a) + exp(-k * b);
+  return -log(max(0.0001, res)) / k;
+}
+
+// polynomial smooth min (k = 0.1);
+float smin(in float a, in float b, in float k) {
+  float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
+  return mix(b, a, h) - k * h * (1.0 - h);
+}
+
+// power smooth min (k = 8);
+float smin(in float a, in float b, in float k) {
+  a = pow(a, k);
+  b = pow(b, k);
+  return pow((a * b) / (a + b), 1.0 / k);
 }
