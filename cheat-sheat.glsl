@@ -150,6 +150,12 @@ float box_sdf_fast(vec3 point, vec3 center, vec3 size) {
   return vmax(abs(point - center) - size * 0.5);
 }
 
+float cylinder_sdf(vec3 point, float diameter, float height) {
+  vec2 h = vec2(diameter, height);
+  vec2 d = abs(vec2(length(point.xz), point.y)) - h;
+  return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
+}
+
 float sdf_union(float d1, float d2) {
   return min(d1, d2);
 }
@@ -160,6 +166,59 @@ float sdf_subtraction(float d1, float d2) {
 
 float sdf_intersection(float d1, float d2) {
   return max(d1, d2);
+}
+
+// 3D Transformation Matrices
+
+mat4 translate(vec3 v) {
+  return mat4(
+    vec4(1.0, 0.0, 0.0, 0.0),
+    vec4(0.0, 1.0, 0.0, 0.0),
+    vec4(0.0, 0.0, 1.0, 0.0),
+    vec4(v.x, v.y, v.z, 1.0),
+  );
+}
+
+mat4 scale(vec3 s) {
+  return mat4(
+    vec4(s.x, 0.0, 0.0, 0.0),
+    vec4(0.0, s.y, 0.0, 0.0),
+    vec4(0.0, 0.0, s.z, 0.0),
+    vec4(0.0, 0.0, 0.0, 1.0)
+  );
+}
+
+mat4 rotate_x(float angle) {
+  float c = cos(angle);
+  float s = sin(angle);
+  return mat4(
+    vec4(1.0, 0.0, 0.0, 0.0),
+    vec4(0.0, c, -s, 0.0),
+    vec4(0.0, s, c, 0.0),
+    vec4(0.0, 0.0, 0.0, 1.0)
+  );
+}
+
+mat4 rotate_y(float angle) {
+  float c = cos(angle);
+  float s = sin(angle);
+  return mat4(
+    vec4(c, 0.0, s, 0.0),
+    vec4(0.0, 1.0, 0.0, 0.0),
+    vec4(-s, 0.0, c, 0.0),
+    vec4(0.0, 0.0, 0.0, 1.0)
+  );
+}
+
+mat4 rotate_z(float angle) {
+  float c = cos(angle);
+  float s = sin(angle);
+  return mat4(
+    vec4(c, s, 0.0, 0.0),
+    vec4(-s, c, 0.0, 0.0),
+    vec4(0.0, 0.0, 1.0, 0.0),
+    vec4(0.0, 0.0, 0.0, 1.0)
+  );
 }
 
 // Shaping Functions
