@@ -168,6 +168,20 @@ float sdf_intersection(float d1, float d2) {
   return max(d1, d2);
 }
 
+vec3 sdf_twist(vec3 point, float scale) {
+  float c = cos(scale * point.y + scale);
+  float s = sin(scale * point.y + scale);
+  mat2 m = mat2(c, -s, s, c);
+  return vec3(m * point.xz, point.y);
+}
+
+vec3 sdf_bend(vec3 point, float scale) {
+  float c = cos(scale * point.y);
+  float s = sin(scale * point.y);
+  mat2 m = mat2(c, -s, s, c);
+  return vec3(m * point.xy, point.z);
+}
+
 // 3D Transformation Matrices
 
 mat4 translate(vec3 v) {
