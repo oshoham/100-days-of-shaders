@@ -38,8 +38,7 @@ const init = sqrtNumParticles => {
     color: regl.texture({
       radius: sqrtNumParticles,
       data: initialConditions,
-      type: 'float',
-      wrap: true
+      type: 'float'
     }),
     depthStencil: false
   }))
