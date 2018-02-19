@@ -1,0 +1,53 @@
+<jittershader name="textflow">
+	<param name="time" type="float" default="0.0" />
+	<param name="gain_r" type="float" default="1.0" />
+	<param name="gain_a" type="float" default="1.0" />
+	<param name="gain_t" type="float" default="1.0" />
+	<param name="gain_i" type="float" default="0.6" />
+	<param name="gain_e" type="float" default="0.5" />
+	<param name="gain_d" type="float" default="-0.3" />
+	<param name="gain_f" type="float" default="0.0" />
+	<param name="tex0" type="int" default="0" />
+	<language name="glsl" version="1.0">
+		<bind param="time" program="fp" />
+		<bind param="gain_r" program="fp" />
+		<bind param="gain_a" program="fp" />
+		<bind param="gain_t" program="fp" />
+		<bind param="gain_i" program="fp" />
+		<bind param="gain_d" program="fp" />
+		<bind param="gain_e" program="fp" />
+		<bind param="gain_f" program="fp" />
+		<bind param="tex0" program="fp" />
+		<program name="vp" type="vertex" source="sh.passthrudim.vp.glsl" />
+		<program name="fp" type="fragment">
+<![CDATA[
+varying vec2 texcoord0;
+varying vec2 texdim0;
+uniform sampler2DRect tex0;
+uniform float time;
+uniform float gain_t;
+uniform float gain_r;
+uniform float gain_a;
+uniform float gain_i;
+uniform float gain_d;
+uniform float gain_e;
+uniform float gain_f;
+
+void main(void)
+{
+   vec2 resolution = texdim0;
+   float x = texcoord0.x;
+   float y = texcoord0.y;
+   float mov0 = x+y+cos(sin((gain_t*time))*2.)*100.+sin(x/100.)*1000.;
+   float mov1 = gain_r*(y / resolution.y / 0.2 + (gain_t*time));
+   float mov2 = gain_a*(x / resolution.x / 0.2);
+   float c1 = abs(sin(mov1+(gain_t*time))/2.+mov2/2.-mov1-mov2+(gain_t*time));
+   float c2 = abs(sin(c1+sin(mov0/1000.+(gain_t*time))+sin(y/40.+(gain_t*time))+sin((x+y)/100.)*3.));
+   float c3 = abs(sin(c2+cos(mov1+mov2+c2)+cos(mov2)+sin(x/1000.)));
+   vec3 col =  texture2DRect(tex0,texcoord0).xyz;
+   gl_FragColor = gain_e*(vec4(c1,c2,c3,1.0)*(1.0 + gain_i*vec4(col,1.0)/(1.0+gain_d*vec4(col,1.0)))) + gain_f*vec4(col,1.0);
+}
+]]>
+		</program>
+	</language>
+</jittershader>

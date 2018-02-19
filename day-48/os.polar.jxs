@@ -1,0 +1,46 @@
+<jittershader name="step">
+	<description>
+	step function
+	</description>
+	<param name="time" type="float" default="0.0" />
+	<param name="tex0" type="int" default="0" />
+	<language name="glsl" version="1.0">
+		<bind param="time" program="fp" />
+		<bind param="tex0" program="fp" />
+		<program name="vp" type="vertex" source="sh.passthrudim.vp.glsl" />
+		<program name="fp" type="fragment">
+<![CDATA[
+
+#define PI 3.14159265359
+#define TWO_PI 6.28318530718
+
+varying vec2 texcoord0;
+varying vec2 texdim0;
+
+uniform float time;
+uniform sampler2DRect tex0;
+
+float map(float value, float inMin, float inMax, float outMin, float outMax) {
+  return outMin + (outMax - outMin) * (value - inMin) / (inMax - inMin);
+}
+
+vec2 map(vec2 value, vec2 inMin, vec2 inMax, vec2 outMin, vec2 outMax) {
+  return outMin + (outMax - outMin) * (value - inMin) / (inMax - inMin);
+}
+
+void main() {
+	vec2 pos = map(texcoord0, vec2(0.0), texdim0, -texdim0, texdim0);
+	float angle = map(atan(pos.y, pos.x), -PI, PI, 0.0, 1.0);
+	float radius = map(length(pos), 0.0, 0.5, 0.0, 1.0);
+	angle += map(step(1.0, radius), 0.0, 1.0, -1.0, 1.0) * map(sin(time * 0.1), -1.0, 1.0, 0.0, 0.5);
+  angle = mod(angle, 0.05);
+
+  vec2 polar = vec2(angle, radius);
+
+  vec3 texColor = texture2DRect(tex0, polar).rgb;
+  gl_FragColor = vec4(texColor, 1.0);
+}
+]]>
+		</program>
+	</language>
+</jittershader>

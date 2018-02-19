@@ -1,0 +1,60 @@
+<jittershader name="textflow">
+	<param name="time" type="float" default="3.08" />
+	<param name="mode" type="float" default="0.0" />
+	<param name="gain_r" type="float" default="1.5" />
+	<param name="gain_a" type="float" default="1.0" />
+	<param name="gain_t" type="float" default="0.2" />
+	<param name="tex0" type="int" default="0" />
+	<language name="glsl" version="1.0">
+		<bind param="time" program="fp" />
+		<bind param="mode" program="fp" />
+		<bind param="gain_r" program="fp" />
+		<bind param="gain_a" program="fp" />
+		<bind param="gain_t" program="fp" />
+		<bind param="tex0" program="fp" />	
+		<program name="vp" type="vertex" source="sh.passthrudim.vp.glsl" />
+		<program name="fp" type="fragment">
+<![CDATA[
+varying vec2 texcoord0;
+varying vec2 texdim0;
+uniform sampler2DRect tex0;
+uniform float time;
+uniform float gain_r;
+uniform float gain_a;
+uniform float gain_t;
+uniform float mode;
+
+void main(void)
+{
+	vec2 resolution = texdim0;
+    vec2 p = -1.0 + 2.0 * texcoord0 / resolution;
+    vec2 uv;
+   
+    if (p.x < 0.0)
+    {
+     p.x = - p.x;
+    }
+    if (p.y < 0.0)
+    {
+     p.y = - p.y;
+    }
+    float a = gain_a*atan(p.y,p.x);
+    float r = gain_r*sqrt(dot(p,p));
+
+    uv.x = mod(.75*(gain_t*time)+.1/r,1.0);
+    uv.y = mod(a/3.1416,1.0);
+    if (mode <= 0.0) { 
+     if (uv.y < 0.5) {
+      uv.y = 1.0 - uv.y;
+     }
+    }
+
+    vec2 coord = vec2(uv.x*resolution.x,uv.y*resolution.y);
+    vec3 col =  texture2DRect(tex0,coord).xyz;
+
+    gl_FragColor = vec4(col*r,1.0);
+}
+]]>
+		</program>
+	</language>
+</jittershader>

@@ -1,0 +1,1 @@
+shortDelay, 51 97 1;filter, 64 130 2;"long delay", 101 170 4;"pitch shifter", 57 219 5;MCenvelope, 76 269 3;"a VST plugin", 42 341 6;
