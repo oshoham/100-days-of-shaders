@@ -1,0 +1,35 @@
+<jittershader name="lumasker">
+  <description>
+  example shader
+  </description>
+  <param name="u_time" type="float" default="0.0" />
+  <param name="tex0" type="int" default="0" />
+  <language name="glsl" version="1.0">
+    <bind param="u_time" program="fp" />
+    <bind param="tex0" program="fp" />
+    <program name="vp" type="vertex" source="sh.passthrudim.vp.glsl" />
+    <program name="fp" type="fragment">
+<![CDATA[
+
+#define PI 3.14159265359
+#define TWO_PI 6.28318530718
+
+varying vec2 texcoord0;
+varying vec2 texdim0;
+
+uniform sampler2DRect tex0;
+uniform float u_time;
+
+void main() {
+  vec2 st = gl_FragCoord.xy / texdim0;
+
+  vec3 color = vec3(0.0);
+  color = vec3(st.x,st.y,abs(sin(u_time)));
+
+  gl_FragColor = vec4(color, 1.0);
+}
+
+]]>
+    </program>
+  </language>
+</jittershader>

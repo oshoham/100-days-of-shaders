@@ -1,0 +1,119 @@
+<jittershader name="jit.gen.jxs">
+	<description>
+	"port of Paul Fennell's jit.gl.pix reaction diffusion"
+	</description>
+	<param name="rnd" type="vec2" default="0.1 0.3"  />
+	<param name="weights" type="vec4" default="0.1 0.5 0.1 0.0"  />
+	<param name="a4" type="float" default="0.0"  />
+	<param name="a3" type="float" default="1.0"  />
+	<param name="a2" type="float" default="0.8"  />
+	<param name="a1" type="float" default="0.5"  />
+	<param name="tex0" type="int" default="0" />
+  <param name="tex1" type="int" default="0" />
+  <param name="tex2" type="int" default="0" />
+  <param name="tex3" type="int" default="0" />
+	<language name="glsl" version="1.0">
+		<bind param="rnd" program="fp" />
+		<bind param="weights" program="fp" />
+		<bind param="a4" program="fp" />
+		<bind param="a3" program="fp" />
+		<bind param="a2" program="fp" />
+		<bind param="a1" program="fp" />
+		<bind param="tex0" program="fp" />
+	    <bind param="tex1" program="fp" />
+	    <bind param="tex2" program="fp" />
+	    <bind param="tex3" program="fp" />
+		<program name="vp" type="vertex">
+<![CDATA[
+varying vec2 texcoord0;
+varying vec2 texcoord1;
+varying vec2 texcoord2;
+varying vec2 texcoord3;
+varying vec2 texdim0;
+varying vec2 texdim1;
+varying vec2 texdim2;
+varying vec2 texdim3;
+varying vec2 texorient0;
+varying vec2 texorient1;
+varying vec2 texorient2;
+varying vec2 texorient3;
+
+void main() {
+  // perform standard transform on vertex
+  gl_Position = ftransform();
+
+  // transform texcoords
+  texcoord0 = vec2(gl_TextureMatrix[0] * gl_MultiTexCoord0);
+  texcoord1 = vec2(gl_TextureMatrix[1] * gl_MultiTexCoord1);
+  texcoord2 = vec2(gl_TextureMatrix[2] * gl_MultiTexCoord2);
+	texcoord3 = vec2(gl_TextureMatrix[3] * gl_MultiTexCoord3);
+  // extract the x and y scalars from the texture matrix to determine dimensions
+  texdim0 = vec2 (abs(gl_TextureMatrix[0][0][0]),abs(gl_TextureMatrix[0][1][1]));
+  texdim1 = vec2 (abs(gl_TextureMatrix[1][0][0]),abs(gl_TextureMatrix[1][1][1]));
+  texdim2 = vec2 (abs(gl_TextureMatrix[2][0][0]),abs(gl_TextureMatrix[2][1][1]));
+  texdim3 = vec2 (abs(gl_TextureMatrix[3][0][0]),abs(gl_TextureMatrix[3][1][1]));
+  // extract the sign for orientation
+  texorient0 = vec2 (gl_TextureMatrix[0][0][0]/texdim0.x,gl_TextureMatrix[0][1][1]/texdim0.y);
+  texorient1 = vec2 (gl_TextureMatrix[1][0][0]/texdim1.x,gl_TextureMatrix[1][1][1]/texdim1.y);
+  texorient2 = vec2 (gl_TextureMatrix[2][0][0]/texdim2.x,gl_TextureMatrix[2][1][1]/texdim2.y);
+  texorient3 = vec2 (gl_TextureMatrix[3][0][0]/texdim3.x,gl_TextureMatrix[3][1][1]/texdim3.y);
+}
+]]>
+		</program>
+		<program name="fp" type="fragment">
+<![CDATA[
+varying vec2 texcoord0;
+varying vec2 texcoord1;
+varying vec2 texcoord2;
+varying vec2 texcoord3;
+varying vec2 texdim0;
+varying vec2 texdim1;
+varying vec2 texdim2;
+varying vec2 texdim3;
+varying vec2 texorient0;
+varying vec2 texorient1;
+varying vec2 texorient2;
+varying vec2 texorient3;
+
+uniform sampler2DRect tex0;
+uniform sampler2DRect tex1;
+uniform sampler2DRect tex2;
+uniform sampler2DRect tex3;
+
+uniform vec2 rnd;
+uniform vec4 weights;
+uniform float a4;
+uniform float a3;
+uniform float a2;
+uniform float a1;
+
+vec4 sample_wrap(sampler2DRect tex, vec2 texcoord) {
+	return texture2DRect(tex, texcoord);
+}
+
+void main() {
+	vec4 tex0Color = texture2DRect(tex0, texcoord0);
+	vec4 tex1Color = texture2DRect(tex1, texcoord1);
+	vec4 tex2Color = texture2DRect(tex2, texcoord2);
+	vec4 tex3Color = texture2DRect(tex3, texcoord3);
+
+	vec4 wnorm = normalize(weights);
+	// vec2 pixsize = (1.0 / texdim0);
+	vec2 pixsize = vec2(1.0);
+
+	vec2 size = 4.0 * pixsize;
+	vec2 hx = vec2(size.x, 0.0);
+	vec2 hy = vec2(0.0, size.y);
+	vec4 dx = 0.5 * (sample_wrap(tex1, texcoord0 + hx) - sample_wrap(tex1, texcoord0 - hx));
+	vec4 dy = 0.5 * (sample_wrap(tex1, texcoord0 + hy) - sample_wrap(tex1, texcoord0 - hy));
+
+	vec2 offset = texcoord0 + (vec2(float(dot(dx, wnorm) + tex2Color * a4), dot(dy, wnorm)) * pixsize) * 8.0;
+	vec2 rand = sample_wrap(tex2, offset + rnd).xy;
+	vec4 res = (sample_wrap(tex0, offset) + (rand.r - 0.5) * 0.0025) - 0.002;
+	vec4 expr = (res - sample_wrap(tex0, vec2(vec4(offset, 0.0, 0.0) / (a1 * tex1Color) + tex3Color))) - 0.08 * (sample_wrap(tex1, offset + (rand - 0.5) * pixsize) - (sample_wrap(tex0, offset + (rand - 0.5) * pixsize) / dot(vec3(float(float(sin(dy * a2 + vec4(offset * a3, 0.0, 0.0))))), vec3(0.0, 1.0, 0.0))) / tex3Color);
+	gl_FragColor = expr;
+}
+]]>
+    </program>
+	</language>
+</jittershader>

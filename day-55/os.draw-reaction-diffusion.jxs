@@ -1,0 +1,62 @@
+<jittershader name="lumasker">
+  <description>
+  reaction diffusion
+  </description>
+  <param name="color1" type="vec3" default="1.0 0.0 0.4667" /> // 0.8235 1.0 0.0
+  <param name="color2" type="vec3" default="1.0 0.5843 0.0" /> // 1.0 0.0 0.7647
+  <param name="color3" type="vec3" default="0.0 0.0.8 1.0" /> // 0.0 1.0 0.941
+  <param name="tex0" type="int" default="0" />
+  <language name="glsl" version="1.0">
+    <bind param="color1" program="fp" />
+    <bind param="color2" program="fp" />
+    <bind param="color3" program="fp" />
+    <bind param="tex0" program="fp" />
+    <program name="vp" type="vertex" source="sh.passthrudim.vp.glsl" />
+    <program name="fp" type="fragment">
+<![CDATA[
+
+varying vec2 texcoord0;
+varying vec2 texdim0;
+
+uniform sampler2DRect tex0;
+
+uniform vec3 color1;
+uniform vec3 color2;
+uniform vec3 color3;
+// uniform float scale;
+
+float map(float value, float inMin, float inMax, float outMin, float outMax) {
+  return outMin + (outMax - outMin) * (value - inMin) / (inMax - inMin);
+}
+
+void main() {
+  // vec2 uv = (gl_FragCoord.xy / resolution / scale) + ((1.0/scale*0.5 + (0.5 - 1.0/scale)));
+
+  vec3 black = vec3(0.0);
+  vec3 targetColor = vec3(0.0);
+  float sourceRamp = texture2DRect(tex0, texcoord0).g * 3.0;
+
+  if (sourceRamp < 0.1) {
+    float ramp = map(sourceRamp, 0.0, 0.1, 0.0, 1.0);
+    targetColor = mix( black, color3, min( ramp, 1.0 ) );
+  } else if (sourceRamp < 0.45) {
+    float ramp = map(sourceRamp, 0.1, 0.45, 0.0, 1.0);
+    targetColor = mix( color3, color2, min( ramp, 1.0 ) );
+  } else {
+    float ramp = map(sourceRamp, 0.45, 1.0, 0.0, 1.0);
+    targetColor = mix( color2, color1, min( ramp, 1.0 ) );
+  }
+
+  // vec4 texColor = texture2DRect(tex0, texcoord0);
+  // float c = clamp(texColor.r - texColor.g, 0.0, 1.0);
+
+  gl_FragColor = vec4(targetColor, 1.0);
+}
+
+]]>
+    </program>
+  </language>
+</jittershader>
+
+
+
