@@ -1,0 +1,31 @@
+<jittershader name="lumasker">
+  <description>
+  remove red
+  </description>
+  <param name="tex0" type="int" default="0" />
+  <language name="glsl" version="1.0">
+    <bind param="tex0" program="fp" />
+    <program name="vp" type="vertex" source="sh.passthrudim.vp.glsl" />
+    <program name="fp" type="fragment">
+<![CDATA[
+
+varying vec2 texcoord0;
+varying vec2 texdim0;
+
+uniform sampler2DRect tex0;
+
+void main() {
+  vec4 texColor = texture2DRect(tex0, texcoord0);
+
+  texColor.r = 0.0;
+
+  gl_FragColor = texColor;
+}
+
+]]>
+    </program>
+  </language>
+</jittershader>
+
+
+
