@@ -477,9 +477,9 @@
 					"numinlets" : 1,
 					"numoutlets" : 2,
 					"outlettype" : [ "jit_matrix", "" ],
-					"patching_rect" : [ 868.0, 107.0, 165.0, 22.0 ],
+					"patching_rect" : [ 868.0, 107.0, 158.0, 22.0 ],
 					"style" : "",
-					"text" : "jit.mo.join 1 100 @drawto ctx"
+					"text" : "jit.mo.join 1 10 @drawto ctx"
 				}
 
 			}
