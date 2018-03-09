@@ -1,0 +1,53 @@
+<jittershader name="lumasker">
+  <description>
+  example shader
+  </description>
+  <param name="time" type="float" default="0.0" />
+  <param name="frequency" type="float" default="60.0" />
+  <param name="sync" type="float" default="0.1" />
+  <param name="offset" type="float" default="0.0" />
+  <param name="tex0" type="int" default="0" />
+  <language name="glsl" version="1.0">
+    <bind param="time" program="fp" />
+    <bind param="frequency" program="fp" />
+    <bind param="sync" program="fp" />
+    <bind param="offset" program="fp" />
+    <bind param="tex0" program="fp" />
+    <program name="vp" type="vertex" source="sh.passthrudim.vp.glsl" />
+    <program name="fp" type="fragment">
+<![CDATA[
+
+#define PI 3.14159265359
+#define TWO_PI 6.28318530718
+
+varying vec2 texcoord0;
+varying vec2 texdim0;
+
+uniform sampler2DRect tex0;
+
+uniform float time;
+uniform float frequency;
+uniform float sync;
+uniform float offset;
+
+void main() {
+  vec2 st = texcoord0 / texdim0;
+
+  vec3 color = vec3(0.0);
+
+  color.r = sin((st.x - offset / 100.0 + time * sync) * frequency) * 0.5 + 0.5;
+  color.g = sin((st.x + time * sync) * frequency) * 0.5 + 0.5;
+  color.b = sin((st.x + offset / 100.0 + time * sync) * frequency) * 0.5 + 0.5;
+
+  gl_FragColor = vec4(color, 1.0);
+
+  // float r<0> = sin((st.x-<2>/100.+time*<1>)*<0>)*0.5 + 0.5;
+  // float g<0> = sin((st.x+time*<1>)*<0>)*0.5 + 0.5;
+  // float b<0> = sin((st.x+<2>/100.+time*<1>)*<0>)*0.5 + 0.5;
+  // c = vec4(r<0>, g<0>, b<0>, 1.0);
+}
+
+]]>
+    </program>
+  </language>
+</jittershader>

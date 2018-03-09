@@ -4,10 +4,12 @@
   </description>
   <param name="time" type="float" default="0." />
   <param name="octaves" type="int" default="5" />
-  <param name="scale" type="vec2" default="1. 1." />
+  <param name="noiseScale" type="vec2" default="1. 1." />
+  <param name="scale" type="float" default="1." />
   <language name="glsl" version="2.1">
     <bind param="time" program="fp" />
     <bind param="octaves" program="fp" />
+	<bind param="noiseScale" program="fp" />
     <bind param="scale" program="fp" />
     <program name="vp" type="vertex" source="sh.passthrudim.vp.glsl" />
     <program name="fp" type="fragment">
@@ -17,8 +19,9 @@ varying vec2 texcoord0;
 varying vec2 texdim0;
 
 uniform float time;
-uniform vec2 scale;
+uniform vec2 noiseScale;
 uniform int octaves;
+uniform float scale;
 
 vec3 permute(vec3 x) {
   return mod(((x*34.0)+1.0)*x, 289.0);
@@ -59,7 +62,7 @@ float fbm(in vec2 _st) {
   mat2 rot = mat2(cos(0.5), sin(0.5),
                   -sin(0.5), cos(0.50));
   for (int i = 0; i < octaves; i++) {
-      v += a * snoise(_st * scale);
+      v += a * snoise(_st * noiseScale);
       _st = rot * _st * 2.0 + shift;
       a *= 0.5;
   }
@@ -99,7 +102,7 @@ void main() {
 
   // color = step(0.5, color);
 
-  gl_FragColor = vec4(f * f + color, 1.0);
+  gl_FragColor = vec4((f * f + color) * scale, 1.0);
 }
 
 ]]>

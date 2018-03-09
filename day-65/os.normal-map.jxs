@@ -1,0 +1,38 @@
+<jittershader name="normalmap">
+  <param name="size" type="vec2" default="1.0 0.0" />
+  <param name="tex0" type="int" default="0" />
+  <language name="glsl" version="2.1">
+    <bind param="tex0" program="fp" />
+    <bind param="size" program="fp" />
+    <program name="vp" type="vertex" source="sh.passthrudim.vp.glsl" />
+    <program name="fp" type="fragment" >
+<![CDATA[
+varying vec2 texcoord0;
+varying vec2 texdim0;
+
+uniform sampler2D tex0;
+uniform vec2 size;
+
+const vec3 off = vec3(-1.,0.,1.);
+
+void main(void)
+{
+  vec2 st = texcoord0 / texdim0;
+  vec4 wave = texture2D(tex0, texcoord0);
+
+  float s11 = wave.x;
+  float s01 = texture2D(tex0, texcoord0 + off.xy / texdim0).x;
+  float s21 = texture2D(tex0, texcoord0 + off.zy / texdim0).x;
+  float s10 = texture2D(tex0, texcoord0 + off.yx / texdim0).x;
+  float s12 = texture2D(tex0, texcoord0 + off.yz / texdim0).x;
+  vec3  va  = normalize(vec3(size.xy,s21-s01));
+  vec3  vb  = normalize(vec3(size.yx,s12-s10));
+  vec4 bump = vec4(cross(va,vb), s11);
+
+  gl_FragColor = bump;
+}
+
+]]>
+    </program>
+  </language>
+</jittershader>
