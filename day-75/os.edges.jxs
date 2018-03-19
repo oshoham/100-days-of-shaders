@@ -1,0 +1,54 @@
+<jittershader name="lumasker">
+	<description>
+	Sobel edge detection
+	</description>
+	<param name="tex0" type="int" default="0" />
+	<language name="glsl" version="1.0">
+		<bind param="tex0" program="fp" />
+		<program name="vp" type="vertex" source="sh.passthrudim.vp.glsl" />
+		<program name="fp" type="fragment">
+<![CDATA[
+
+varying vec2 texcoord0;
+varying vec2 texdim0;
+
+uniform sampler2DRect tex0;
+
+const mat3 Gx = mat3(
+  -1.0, -2.0, -1.0,
+  0.0, 0.0, 0.0,
+  1.0, 2.0, 1.0
+);
+
+const mat3 Gy = mat3(
+  -1.0, 0.0, 1.0,
+  -2.0, 0.0, 2.0,
+  -1.0, 0.0, 1.0
+);
+
+float sobelEdgeDetection(in vec2 st, in sampler2DRect tex) {
+  float valueGx = 0.0;
+  float valueGy = 0.0;
+
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+      vec4 texColor = texture2DRect(tex, st + vec2(ivec2(i - 1, j - 1)));
+      float intensity = texColor.r;
+      valueGx += Gx[i][j] * intensity;
+      valueGy += Gy[i][j] * intensity;
+    }
+  }
+
+  return length(vec2(valueGx, valueGy));
+}
+
+void main() {
+  float edges = sobelEdgeDetection(texcoord0, tex0);
+  vec4 texColor = texture2DRect(tex0, texcoord0);
+  vec3 color = step(0.9, 1.0 - vec3(edges));
+  gl_FragColor = vec4(color, 1.0);
+}
+]]>
+		</program>
+	</language>
+</jittershader>
