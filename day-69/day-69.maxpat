@@ -38,6 +38,19 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-6",
+					"maxclass" : "number",
+					"numinlets" : 1,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "bang" ],
+					"parameter_enable" : 0,
+					"patching_rect" : [ 77.0, 59.0, 50.0, 22.0 ],
+					"style" : ""
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"format" : 6,
 					"id" : "obj-45",
 					"maxclass" : "flonum",
@@ -121,7 +134,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-88",
-					"increment" : 0.005,
+					"increment" : 0.021,
 					"maxclass" : "incdec",
 					"numinlets" : 1,
 					"numoutlets" : 1,
@@ -141,7 +154,7 @@
 					"outlettype" : [ "jit_matrix", "" ],
 					"patching_rect" : [ 180.0, 388.0, 207.0, 22.0 ],
 					"style" : "",
-					"text" : "jit.matrix 1 float32 640 640 @interp 1"
+					"text" : "jit.matrix 1 float32 960 540 @interp 1"
 				}
 
 			}
@@ -234,7 +247,7 @@
 					"outlettype" : [ "jit_matrix", "" ],
 					"patching_rect" : [ 180.0, 328.5, 272.0, 23.0 ],
 					"style" : "",
-					"text" : "jit.bfg 1 float32 64 64 1 @basis noise.simplex"
+					"text" : "jit.bfg 1 float32 96 54 1 @basis noise.simplex"
 				}
 
 			}
@@ -1172,6 +1185,15 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-2", 1 ],
+					"disabled" : 0,
+					"hidden" : 0,
+					"source" : [ "obj-6", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-72", 2 ],
 					"disabled" : 0,
 					"hidden" : 0,
@@ -1294,8 +1316,8 @@
 				"name" : "helpfile_label-1",
 				"default" : 				{
 					"fontname" : [ "Arial" ],
-					"textcolor" : [ 0.501961, 0.501961, 0.501961, 1.0 ],
-					"fontsize" : [ 13.0 ]
+					"fontsize" : [ 13.0 ],
+					"textcolor" : [ 0.501961, 0.501961, 0.501961, 1.0 ]
 				}
 ,
 				"parentstyle" : "",

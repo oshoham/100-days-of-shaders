@@ -1,0 +1,54 @@
+<jittershader name="bump map">
+  <description>
+  Bump map generation (based on a jit.gl.pix by Sam Tarakajian)
+  </description>
+  <param name="hscale" type="float" default="1.0"  />
+  <param name="nscale" type="float" default="1.0"  />
+  <param name="tex0" type="int" default="0" />
+  <language name="glsl" version="1.0">
+    <bind param="hscale" program="fp" />
+    <bind param="nscale" program="fp" />
+    <bind param="tex0" program="fp" />
+    <program name="vp" type="vertex" source="sh.passthrudim.vp.glsl" />
+    <program name="fp" type="fragment">
+<![CDATA[
+varying vec2 texcoord0;
+varying vec2 texdim0;
+
+uniform sampler2DRect tex0;
+uniform float hscale;
+uniform float nscale;
+
+vec2 jit_mirror1(vec2 v) {
+  return 1.-abs((mod(v, 2.)-1.));
+}
+
+vec4 sample_mirror_unit0(sampler2DRect tex, vec2 tc) {
+  return texture2DRect(tex, jit_mirror1(tc) * texdim0);
+}
+
+void main() {
+  vec4 in1 = texture2DRect(tex0, texcoord0);
+  vec2 cell = texcoord0 / texdim0 * (texdim0 - 1.0);
+
+  vec2 add_5 = (cell + vec2(1.0, 0.0));
+  vec2 div_6 = (add_5 / texdim0);
+  vec4 sample_3 = ((sample_mirror_unit0(tex0, div_6)));
+  vec4 sub_7 = (in1 - sample_3);
+  vec4 mul_8 = (sub_7 * hscale);
+  vec3 vec_16 = (vec3(1.0, 0.0, float(mul_8)));
+  vec2 sub_15 = (cell - vec2(0.0, 1.0));
+  vec2 div_11 = (sub_15 / texdim0);
+  vec4 sample_14 = ((sample_mirror_unit0(tex0, div_11)));
+  vec4 sub_10 = (in1 - sample_14);
+  vec4 mul_9 = (sub_10 * hscale);
+  vec3 vec_18 = (vec3(0.0, 1.0, float(mul_9)));
+  vec3 cross_19 = ((cross(vec_16, vec_18)));
+  vec3 mul_20 = (cross_19 * nscale);
+
+  gl_FragColor = vec4(mul_20, 0.0);
+}
+]]>
+    </program>
+  </language>
+</jittershader>

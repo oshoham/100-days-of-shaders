@@ -1,0 +1,56 @@
+<jittershader name="crosshatch">
+	<description>
+	Cross-hatching
+	</description>
+	<param name="tex0" type="int" default="0" />
+	<language name="glsl" version="1.0">
+		<bind param="tex0" program="fp" />
+		<program name="vp" type="vertex" source="sh.passthrudim.vp.glsl" />
+		<program name="fp" type="fragment">
+<![CDATA[
+
+varying vec2 texcoord0;
+varying vec2 texdim0;
+
+uniform sampler2DRect tex0;
+
+float luma(vec3 color) {
+  return dot(color, vec3(0.299, 0.587, 0.114));
+}
+
+float luma(vec4 color) {
+  return dot(color.rgb, vec3(0.299, 0.587, 0.114));
+}
+
+void main() {
+  vec4 texColor = texture2DRect(tex0, texcoord0);
+
+  // float luminance = luma(texColor);
+  float luminance = length(texColor.rgb);
+
+  vec4 color = vec4(1.0);
+
+  if (luminance < 1.00) {
+    if (mod(gl_FragCoord.x + gl_FragCoord.y, 10.0) == 0.0) {
+      color = vec4(0.0, 0.0, 0.0, 1.0);
+    }
+  } else if (luminance < 0.75) {
+    if (mod(gl_FragCoord.x - gl_FragCoord.y, 10.0) == 0.0) {
+      color = vec4(0.0, 0.0, 0.0, 1.0);
+    }
+  } else if (luminance < 0.50) {
+    if (mod(gl_FragCoord.x + gl_FragCoord.y - 5.0, 10.0) == 0.0) {
+      color = vec4(0.0, 0.0, 0.0, 1.0);
+    }
+  } else if (luminance < 0.3) {
+    if (mod(gl_FragCoord.x - gl_FragCoord.y - 5.0, 10.0) == 0.0) {
+      color = vec4(0.0, 0.0, 0.0, 1.0);
+    }
+  }
+
+  gl_FragColor = color;
+}
+]]>
+		</program>
+	</language>
+</jittershader>

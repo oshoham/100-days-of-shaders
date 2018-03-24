@@ -371,7 +371,7 @@
 					"bgcolor2" : [ 0.376471, 0.384314, 0.4, 1.0 ],
 					"bgfillcolor_angle" : 270.0,
 					"bgfillcolor_autogradient" : 0.0,
-					"bgfillcolor_color" : [ 1.0, 0.607843, 1.0, 1.0 ],
+					"bgfillcolor_color" : [ 0.964706, 0.396078, 0.960784, 1.0 ],
 					"bgfillcolor_color1" : [ 0.376471, 0.384314, 0.4, 1.0 ],
 					"bgfillcolor_color2" : [ 0.290196, 0.309804, 0.301961, 1.0 ],
 					"bgfillcolor_proportion" : 0.39,
@@ -630,7 +630,7 @@
 					"outlettype" : [ "jit_matrix", "" ],
 					"patching_rect" : [ 52.999996, 711.333435, 349.0, 22.0 ],
 					"style" : "",
-					"text" : "jit.mo.func @function perlin @period 20 @speed 0.01 @scale 3"
+					"text" : "jit.mo.func @function perlin @period 20 @speed 0.01 @scale 5"
 				}
 
 			}
@@ -2341,9 +2341,9 @@
 						"styles" : [ 							{
 								"name" : "helpfile_label-1",
 								"default" : 								{
+									"fontsize" : [ 13.0 ],
 									"textcolor" : [ 0.501961, 0.501961, 0.501961, 1.0 ],
-									"fontname" : [ "Arial" ],
-									"fontsize" : [ 13.0 ]
+									"fontname" : [ "Arial" ]
 								}
 ,
 								"parentstyle" : "",
@@ -3001,9 +3001,9 @@
 					"numinlets" : 1,
 					"numoutlets" : 3,
 					"outlettype" : [ "jit_gl_texture", "", "" ],
-					"patching_rect" : [ 180.0, 334.0, 367.0, 22.0 ],
+					"patching_rect" : [ 180.0, 334.0, 373.0, 22.0 ],
 					"style" : "",
-					"text" : "jit.gl.node ctx @capture 1 @name subctx @adapt 1 @dim 640 640"
+					"text" : "jit.gl.node ctx @capture 1 @name subctx @adapt 0 @dim 1280 720"
 				}
 
 			}
@@ -3473,9 +3473,9 @@
 					"numinlets" : 1,
 					"numoutlets" : 2,
 					"outlettype" : [ "bang", "" ],
-					"patching_rect" : [ 18.0, 115.0, 278.0, 21.0 ],
+					"patching_rect" : [ 18.0, 115.0, 198.0, 21.0 ],
 					"style" : "",
-					"text" : "jit.window ctx @floating 1 @visible 0 @size 640 640"
+					"text" : "jit.window ctx @floating 1 @visible 0"
 				}
 
 			}
@@ -3548,9 +3548,9 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "bang" ],
-					"patching_rect" : [ 18.0, 31.0, 56.0, 21.0 ],
+					"patching_rect" : [ 18.0, 31.0, 63.0, 21.0 ],
 					"style" : "",
-					"text" : "qmetro 2"
+					"text" : "qmetro 33"
 				}
 
 			}
@@ -5152,7 +5152,7 @@
 					"destination" : [ "obj-114", 0 ],
 					"disabled" : 0,
 					"hidden" : 0,
-					"midpoints" : [ 363.5, 361.0, 86.25, 361.0, 86.25, 234.5, 103.0, 234.5 ],
+					"midpoints" : [ 366.5, 361.0, 86.25, 361.0, 86.25, 234.5, 103.0, 234.5 ],
 					"source" : [ "obj-6", 1 ]
 				}
 
@@ -5514,14 +5514,18 @@
 				"name" : "jit.mo.func.mxo",
 				"type" : "iLaX"
 			}
+, 			{
+				"name" : "jit.*.mxo",
+				"type" : "iLaX"
+			}
  ],
 		"autosave" : 0,
 		"styles" : [ 			{
 				"name" : "helpfile_label-1",
 				"default" : 				{
+					"fontsize" : [ 13.0 ],
 					"textcolor" : [ 0.501961, 0.501961, 0.501961, 1.0 ],
-					"fontname" : [ "Arial" ],
-					"fontsize" : [ 13.0 ]
+					"fontname" : [ "Arial" ]
 				}
 ,
 				"parentstyle" : "",

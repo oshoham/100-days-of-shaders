@@ -38,6 +38,19 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-76",
+					"maxclass" : "number",
+					"numinlets" : 1,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "bang" ],
+					"parameter_enable" : 0,
+					"patching_rect" : [ 55.0, 7.0, 50.0, 22.0 ],
+					"style" : ""
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-77",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
@@ -419,7 +432,7 @@
 					"outlettype" : [ "int" ],
 					"patching_rect" : [ 1060.666626, 514.08252, 94.0, 22.0 ],
 					"style" : "",
-					"text" : "drunk 1000. 10."
+					"text" : "drunk 1000. 50."
 				}
 
 			}
@@ -432,7 +445,7 @@
 					"outlettype" : [ "int" ],
 					"patching_rect" : [ 959.666626, 513.0, 94.0, 22.0 ],
 					"style" : "",
-					"text" : "drunk 1000. 10."
+					"text" : "drunk 1000. 50."
 				}
 
 			}
@@ -709,7 +722,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-83",
-					"increment" : 2.0,
+					"increment" : 5.0,
 					"maxclass" : "incdec",
 					"numinlets" : 1,
 					"numoutlets" : 1,
@@ -808,9 +821,9 @@
 					"numinlets" : 1,
 					"numoutlets" : 3,
 					"outlettype" : [ "jit_gl_texture", "", "" ],
-					"patching_rect" : [ 180.0, 334.0, 367.0, 22.0 ],
+					"patching_rect" : [ 180.0, 334.0, 373.0, 22.0 ],
 					"style" : "",
-					"text" : "jit.gl.node ctx @capture 1 @name subctx @adapt 0 @dim 640 640"
+					"text" : "jit.gl.node ctx @capture 1 @name subctx @adapt 0 @dim 1280 720"
 				}
 
 			}
@@ -1992,7 +2005,7 @@
 					"destination" : [ "obj-7", 0 ],
 					"disabled" : 0,
 					"hidden" : 0,
-					"midpoints" : [ 363.5, 366.0, 87.0, 366.0, 87.0, 283.0, 103.0, 283.0 ],
+					"midpoints" : [ 366.5, 366.0, 87.0, 366.0, 87.0, 283.0, 103.0, 283.0 ],
 					"source" : [ "obj-6", 1 ]
 				}
 
@@ -2125,6 +2138,15 @@
 					"hidden" : 0,
 					"midpoints" : [ 970.666626, 506.04126, 1070.166626, 506.04126 ],
 					"source" : [ "obj-75", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-2", 1 ],
+					"disabled" : 0,
+					"hidden" : 0,
+					"source" : [ "obj-76", 0 ]
 				}
 
 			}
@@ -2331,8 +2353,8 @@
 				"name" : "helpfile_label-1",
 				"default" : 				{
 					"fontname" : [ "Arial" ],
-					"textcolor" : [ 0.501961, 0.501961, 0.501961, 1.0 ],
-					"fontsize" : [ 13.0 ]
+					"fontsize" : [ 13.0 ],
+					"textcolor" : [ 0.501961, 0.501961, 0.501961, 1.0 ]
 				}
 ,
 				"parentstyle" : "",
