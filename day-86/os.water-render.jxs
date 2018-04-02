@@ -1,0 +1,57 @@
+<jittershader name="lumasker">
+	<description>
+	Water render
+	</description>
+	<param name="tex0" type="int" default="0" />
+	<language name="glsl" version="1.0">
+		<bind param="tex0" program="fp" />
+    <program name="vp" type="vertex" source="sh.passthrudim.vp.glsl" />
+		<program name="fp" type="fragment">
+<![CDATA[
+
+varying vec2 texcoord0;
+varying vec2 texdim0;
+
+uniform sampler2DRect tex0;
+
+void main (void){
+  vec4 texColor0 = texture2DRect(tex0, texcoord0);
+
+
+  vec4 texColor1 = texture2DRect(tex0, texcoord0 + vec2(-1.0, 0.5));
+  vec4 texColor2 = texture2DRect(tex0, texcoord0 + vec2(-0.5, -1.0));
+  vec4 texColor3 = texture2DRect(tex0, texcoord0 + vec2(1.0, -0.5));
+  vec4 texColor4 = texture2DRect(tex0, texcoord0 + vec2(0.5, 1.0));
+
+  float dx = texColor0.r - texColor1.r * -1.0 + texColor2.r * -0.5 + texColor3.r * 1.0 + texColor4.r * 0.5;
+  float dy = texColor0.r - texColor1.r * 0.5 + texColor2.r * -1.0 + texColor3.r * -0.5 + texColor4.r * 1.0;
+  vec3 normal = vec3(dx, dy, 1.0);
+  normal = normalize(normal);
+
+  float a = min(0.1, texColor0.g);
+  a += texColor0.r *0.5;
+  float lev = 1.0 - a;
+
+
+
+  vec3 lightDir = vec3(0.0, 1.5,1.0);
+  vec4 ambientColor = vec4(0.2, 0.2, 0.2, 1.0);
+  vec4 diffuseColor = vec4(1.0, 1.0, 1.0, 1.0);
+  vec4 specularColor = vec4(1.0, 1.0, 1.0, 1.0);
+
+  float diffuse = max(0.0, dot(normalize(normal), normalize(lightDir)));
+  vec4 flagColor = diffuse * diffuseColor;
+  flagColor += ambientColor;
+  vec3 vReflection = normalize(reflect(-normalize(lightDir), normalize(normal)));
+  float specular = pow(max(0.0, dot(normalize(normal), vReflection)), 128.0);
+  flagColor += specular * specularColor;
+
+  lev = mix(max(flagColor.r, lev), flagColor.r, 0.2); ;
+  lev = 1.0 - (1.0 - lev) * 0.6;
+
+  gl_FragColor = vec4(lev, lev, lev, 1.0);
+}
+]]>
+		</program>
+	</language>
+</jittershader>
