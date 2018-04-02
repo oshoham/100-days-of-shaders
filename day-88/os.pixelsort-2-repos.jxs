@@ -1,0 +1,65 @@
+<jittershader name="pixelsort-2-repos">
+	<description>
+	Pixel sort repositioning
+  https://www.shadertoy.com/view/XsBfRG
+	</description>
+	<param name="tex0" type="int" default="0" />
+  <param name="tex1" type="int" default="1" />
+	<language name="glsl" version="1.0">
+		<bind param="tex0" program="fp" />
+    <bind param="tex1" program="fp" />
+		<program name="vp" type="vertex" source="sh.passthrudim.vp.glsl" />
+		<program name="fp" type="fragment">
+<![CDATA[
+
+varying vec2 texcoord0;
+varying vec2 texcoord1;
+varying vec2 texdim0;
+varying vec2 texdim1;
+
+uniform sampler2DRect tex0;
+uniform sampler2DRect tex1;
+
+#define DIR true
+
+float fromRgb( vec3 v ) {
+  return ( ( v.z * 256.0 + v.y ) * 256.0 + v.x ) * 255.0;
+}
+
+vec4 draw(vec2 uv) {
+  // return texture2DRect( tex0, texcoord0 );
+
+  vec2 dir = DIR ? vec2( 0.0, 1.0 ) : vec2( 1.0, 0.0 );
+  float wid = DIR ? texdim0.y : texdim0.x;
+  float pos = DIR ? floor( uv.y * texdim0.y ) : floor( uv.x * texdim0.x );
+
+  for ( int i = 0; i < int( wid ); i ++ ) {
+    vec2 p = uv + dir * float( i ) / wid;
+    if ( p.x < 1.0 && p.y < 1.0 ) {
+      float v = fromRgb( texture2DRect( tex0, p * texdim0 ).xyz );
+      if ( abs( v - pos ) < 0.5 ) {
+        return texture2DRect( tex1, p * texdim1 );
+        break;
+      }
+    }
+
+    p = uv - dir * float( i ) / wid;
+    if ( 0.0 < p.x && 0.0 < p.y ) {
+      float v = fromRgb( texture2DRect( tex0, p * texdim0 ).xyz );
+      if ( abs( v - pos ) < 0.5 ) {
+        return texture2DRect( tex1, p * texdim1 );
+        break;
+      }
+    }
+  }
+
+  return vec4( 1.0, 0.0, 1.0, 1.0 );
+}
+
+void main() {
+  gl_FragColor = draw(texcoord0 / texdim0);
+}
+]]>
+		</program>
+	</language>
+</jittershader>
